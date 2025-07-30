@@ -101,7 +101,6 @@
   <div class="tabs" id="tabs"></div>
   <div id="rifas"></div>
 
-  <!-- Biblioteca para exportar como imagem -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
@@ -109,7 +108,7 @@
       "GTV", "Shay", "Kaylla", "Regis", "Boyceta",
       "Lucao", "Renan", "Bruna Crente", "Helena", "Dani",
       "Ureia", "Alfredo", "Gabriel Souza", "Sorriso", "Mariana",
-      "Miguel", "Rayane", "Vitor", "Luiza"
+      "Miguel", "Rayane", "Vitor", "Larissa", "Ayla"
     ];
 
     function gerarNumeros(start) {
@@ -139,7 +138,6 @@
       const rifas = document.getElementById("rifas");
 
       const pessoasEmbaralhadas = embaralhar([...pessoas]);
-
       let contador = 1;
 
       pessoasEmbaralhadas.forEach((nome, i) => {
@@ -165,7 +163,6 @@
           <button class="exportar" onclick="exportarComoImagem('rifa-${i}', '${nome}')">Exportar como JPG</button>
         `;
         rifas.appendChild(container);
-
         contador += 25;
       });
     }
