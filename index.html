@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Rifas Automáticas</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #e0f0ff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #0077cc;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      background: #cce6ff;
+      padding: 10px;
+    }
+    .tabs button {
+      background: #0077cc;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .tabs button:hover {
+      background: #005fa3;
+    }
+    .rifa-container {
+      display: none;
+      padding: 20px;
+      text-align: center;
+    }
+    .rifa-container.active {
+      display: block;
+    }
+    .rifa {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin: auto;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .rifa h2 {
+      color: #0077cc;
+    }
+    .numeros {
+      margin-top: 10px;
+    }
+    .numero {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      margin: 5px;
+      border-radius: 5px;
+      background: #cce6ff;
+      font-weight: bold;
+    }
+    .premio {
+      margin-top: 15px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/100_reais.jpg/640px-100_reais.jpg') center/cover no-repeat;
+      border-radius: 10px;
+      padding: 40px 10px;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      text-shadow: 1px 1px 3px black;
+    }
+    .exportar {
+      margin-top: 10px;
+      background: #0077cc;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Rifas Automáticas</h1>
+    <p>Prêmio: <strong>Pix de R$100</strong></p>
+  </header>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="rifas"></div>
+
+  <!-- Biblioteca para exportar como imagem -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <script>
+    const pessoas = [
+      "GTV", "Shay", "Kaylla", "Regis", "Boyceta",
+      "Lucao", "Renan", "Bruna Crente", "Helena", "Dani",
+      "Ureia", "Alfredo", "Gabriel Souza", "Sorriso", "Mariana",
+      "Miguel", "Rayane", "Vitor", "Luiza"
+    ];
+
+    function gerarNumeros(start) {
+      let html = '';
+      for (let i = start; i < start + 25; i++) {
+        html += `<span class="numero">${i}</span>`;
+      }
+      return html;
+    }
+
+    function embaralhar(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function exportarComoImagem(id, nome) {
+      const element = document.querySelector(`#${id} .rifa`);
+      html2canvas(element).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `${nome}_rifa.jpg`;
+        link.href = canvas.toDataURL('image/jpeg');
+        link.click();
+      });
+    }
+
+    function gerarRifas() {
+      const tabs = document.getElementById("tabs");
+      const rifas = document.getElementById("rifas");
+
+      const pessoasEmbaralhadas = embaralhar([...pessoas]);
+
+      let contador = 1;
+
+      pessoasEmbaralhadas.forEach((nome, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = nome;
+        btn.onclick = () => {
+          document.querySelectorAll(".rifa-container").forEach(div => div.classList.remove("active"));
+          document.getElementById(`rifa-${i}`).classList.add("active");
+        };
+        tabs.appendChild(btn);
+
+        const container = document.createElement("div");
+        container.id = `rifa-${i}`;
+        container.className = "rifa-container" + (i === 0 ? " active" : "");
+
+        container.innerHTML = `
+          <div class="rifa">
+            <h2>${nome}</h2>
+            <p>Rifa nº ${Math.floor(i / 20) + 1}</p>
+            <div class="numeros">${gerarNumeros(contador)}</div>
+            <div class="premio">Pix de R$100</div>
+          </div>
+          <button class="exportar" onclick="exportarComoImagem('rifa-${i}', '${nome}')">Exportar como JPG</button>
+        `;
+        rifas.appendChild(container);
+
+        contador += 25;
+      });
+    }
+
+    gerarRifas();
+  </script>
+
+</body>
+</html>
