@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Rifas Automáticas</title>
+  <title>Rifas Fixas</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -94,7 +94,7 @@
 <body>
 
   <header>
-    <h1>Rifas Automáticas</h1>
+    <h1>Rifas Fixas</h1>
     <p>Prêmio: <strong>Pix de R$100</strong></p>
   </header>
 
@@ -102,7 +102,6 @@
   <div id="rifas"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
   <script>
     const pessoas = [
       "GTV", "Shay", "Kaylla", "Regis", "Boyceta",
@@ -119,10 +118,6 @@
       return html;
     }
 
-    function embaralhar(array) {
-      return array.sort(() => Math.random() - 0.5);
-    }
-
     function exportarComoImagem(id, nome) {
       const element = document.querySelector(`#${id} .rifa`);
       html2canvas(element).then(canvas => {
@@ -137,10 +132,8 @@
       const tabs = document.getElementById("tabs");
       const rifas = document.getElementById("rifas");
 
-      const pessoasEmbaralhadas = embaralhar([...pessoas]);
-      let contador = 1;
-
-      pessoasEmbaralhadas.forEach((nome, i) => {
+      pessoas.forEach((nome, i) => {
+        const inicio = i * 25 + 1;
         const btn = document.createElement("button");
         btn.textContent = nome;
         btn.onclick = () => {
@@ -156,14 +149,13 @@
         container.innerHTML = `
           <div class="rifa">
             <h2>${nome}</h2>
-            <p>Rifa nº ${Math.floor(i / 20) + 1}</p>
-            <div class="numeros">${gerarNumeros(contador)}</div>
+            <p>Números: ${inicio} a ${inicio + 24}</p>
+            <div class="numeros">${gerarNumeros(inicio)}</div>
             <div class="premio">Pix de R$100</div>
           </div>
           <button class="exportar" onclick="exportarComoImagem('rifa-${i}', '${nome}')">Exportar como JPG</button>
         `;
         rifas.appendChild(container);
-        contador += 25;
       });
     }
 
